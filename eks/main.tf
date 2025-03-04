@@ -53,26 +53,26 @@ resource "aws_subnet" "public-1" {
 
 #Route Table for public subnet
 resource "aws_route_table" "public" {
-    vpc_id = aws_vpc.main.id
-    tags = {
-      Name = "Public_RT-EKS"
-    }
-  
+  vpc_id = aws_vpc.main.id
+  tags = {
+    Name = "Public_RT-EKS"
+  }
+
 }
 
 #Route to the Internet Gateway for the Public Route Table
 resource "aws_route" "Public_igw" {
-    route_table_id = aws_route_table.public.id
-    destination_cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.main.id
-  
+  route_table_id         = aws_route_table.public.id
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = aws_internet_gateway.main.id
+
 }
 
 # Associate public Route Table with Public subnet
 resource "aws_route_table_association" "Public" {
-    route_table_id = aws_route_table.public.id
-    subnet_id = aws_subnet.public-1.id
-  
+  route_table_id = aws_route_table.public.id
+  subnet_id      = aws_subnet.public-1.id
+
 }
 
 resource "aws_eip" "nat" {
@@ -206,11 +206,11 @@ resource "aws_eks_node_group" "eks_node_group" {
     desired_size = 2
 
   }
-  depends_on = [ 
-    aws_iam_role_policy_attachment.ecs_registry_policy,
-    aws_iam_role_policy_attachment.eks_node_policy,
-    aws_iam_role_policy_attachment.eks_cni_policy
-   ]
+  # depends_on = [ 
+  # aws_iam_role_policy_attachment.ecs_registry_policy,
+  #  aws_iam_role_policy_attachment.eks_node_policy,
+  #   aws_iam_role_policy_attachment.eks_cni_policy
+  #   ]
   subnet_ids     = [aws_subnet.Pvt-1.id, aws_subnet.Pvt-2.id]
   instance_types = ["t3.medium"]
 }
